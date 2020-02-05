@@ -207,7 +207,7 @@ int main (int argc, char const *argv[]){
 		int NumVars = 0;
 		setupLP(env, lp, C,NumVars);
 		//timelimit
-		CPXsetdblparam(env, CPX_PARAM_TILIM, 10.0);
+		CPXsetdblparam(env, CPX_PARAM_TILIM, strtod(argv[2], NULL));
 		// optimize
 		CHECKED_CPX_CALL( CPXmipopt, env, lp );
 		// print info
