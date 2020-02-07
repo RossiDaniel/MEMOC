@@ -2,7 +2,7 @@
 #include <vector>
 #include <deque>
 #include <iostream>
-#include "parse.cpp"
+#include "../data/parse.cpp"
 #include "cpxmacro.h"
 
 using namespace std;	
