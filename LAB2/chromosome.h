@@ -16,4 +16,6 @@ class chromosome{
         int find(int n)const;
         const std::vector<std::vector<double>>* getcost();
         void LS2opt();
+        void reverse(int,int);
+        int nearestcity(int);
 };

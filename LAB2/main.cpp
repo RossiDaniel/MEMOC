@@ -28,35 +28,35 @@ int main (int argc, char const *argv[]){
     //create vector of costs
 	const vector<vector<double>>* C = new vector<vector<double>>(parse(argv[1]));
     
+    int N = strtod(argv[2], NULL);
+    int subp = strtod(argv[3], NULL);
+    int LS = strtod(argv[4], NULL);
+    int it = strtod(argv[5], NULL);
+
     //generate random initial population
-    vector<chromosome*> p = initialpopulation(10000,C);
-    for(int i=0;i<p.size();i=i+100){
-        p[i]->LS2opt();
-    }
+    vector<chromosome*> p = initialpopulation(N,C);
 
     //sort initial population
-    
-    for(int i=0; i<100;i++){
+    int i = 0;
+    while(i < it){
+        for(int i=0;i<(double(p.size())/100)*LS;i++){
+            p[i]->LS2opt();
+        }
+
         std::sort(p.begin(), p.end(),comparechromosome);
-        std::cout<<"best "<<i<<std::endl;
+        std::cout<<"best "<<i<<" population: "<<p.size()<<std::endl;
         p[p.size()-1]->print();
         std::cout<<std::endl;
-        //create discrete distribution based on rank selection on pop/4
 
-
-        std::vector<chromosome*> selected = get_discrete_distribution(p);
+        std::vector<chromosome*> selected = get_discrete_distribution(p,subp);
         std::vector<chromosome*> children;
         for(int i=0; i<selected.size()-1;i++)
         {
-            //std::cout<<i<<std::endl;
             crossovercx2(selected[i],selected[i+1],children);
-        }
-
-        for(int i=0;i<children.size();i=i+50){
-            children[i]->LS2opt();
         }
 
         selected.insert( selected.end(), children.begin(), children.end() );
         p = selected;
+        i++;
     }
 }

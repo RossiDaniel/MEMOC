@@ -21,7 +21,7 @@ std::vector<chromosome*> initialpopulation(int nip, const std::vector<std::vecto
     return p;
 }
 
-std::vector<chromosome*> get_discrete_distribution(std::vector<chromosome*> cs){
+std::vector<chromosome*> get_discrete_distribution(std::vector<chromosome*> cs,int selectpop){
     std::vector<double> v(cs.size());
     std::iota(v.begin(), v.end(), 1);
     for(int i=0;i<v.size();i++){
@@ -39,7 +39,7 @@ std::vector<chromosome*> get_discrete_distribution(std::vector<chromosome*> cs){
     std::vector<chromosome*> nc;
     int newpop = 0;
     int number = 0;
-    while(newpop < 1000)
+    while(newpop < selectpop)
     {
         number = distr(generator);
         if( selected[number] != 1)
@@ -49,11 +49,6 @@ std::vector<chromosome*> get_discrete_distribution(std::vector<chromosome*> cs){
             newpop++;
         }
     }
-    /*
-    for(int i=0;i<nc.size();i++){
-        nc[i]->print();
-    }
-    */
     return nc;
 }
 
@@ -69,21 +64,6 @@ void crossovercx2(chromosome* p1,chromosome* p2, std::vector<chromosome*>& cs){
 
     while(ok)
     {
-        /*
-        p1->print();
-        p2->print();
-        for(int i=0;i<child1.size();i++){
-            std::cout<<child1[i]<<" ";
-        }
-        std::cout<<std::endl;
-        for(int i=0;i<child2.size();i++){
-            std::cout<<child2[i]<<" ";
-        }
-        std::cout<<std::endl;
-
-        std::cout<<"----------"<<std::endl;
-        */
-        //insert p2[location] in child1 in position index1 
         child1[index1] = (*p2)[location];
 
         location = p1->find(child1[index1]);
@@ -121,3 +101,17 @@ void crossovercx2(chromosome* p1,chromosome* p2, std::vector<chromosome*>& cs){
     cs.push_back(c2);
 }
 
+void IRGIBNNM(chromosome* c1){
+    std::uniform_int_distribution<> d(1, c1->size());
+    std::mt19937 gen;
+
+    //invertion mutation
+    int v1 =  d(gen);
+    int v2 = d(gen);
+    if (v1 > v2){
+        int temp = v1;
+        v1 = v2;
+        v2 = temp;
+    }
+    c1->reverse(v1,v2);
+}
