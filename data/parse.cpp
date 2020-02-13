@@ -9,11 +9,11 @@
 
 using namespace std;
 
-vector<vector<double>> parse(string f){
+vector<vector<double>*> parse(string f){
     string line;
     ifstream myfile (f);
 
-    vector<vector<double>> tokens;
+    vector<vector<double>*> tokens;
 
 
     if (myfile.is_open())
@@ -22,12 +22,13 @@ vector<vector<double>> parse(string f){
         {
             istringstream iss(line);
             string token;
-            vector<double> local;
+            vector<double>* local = new vector<double>;
             while(getline(iss, token, ' '))
             {
+                            //std::cout<<token<<std::endl;
                 if(token != ""){
                     double value = strtod(token.c_str(), NULL);
-                    local.push_back(value);
+                    local->push_back(value);
                 }
             }
             tokens.push_back(local);

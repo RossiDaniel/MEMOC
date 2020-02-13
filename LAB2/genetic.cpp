@@ -6,12 +6,12 @@
 #include <algorithm>
 #include "chromosome.cpp"
 
-std::vector<chromosome*> initialpopulation(int nip, const std::vector<std::vector<double>>* cost){
+std::vector<chromosome*> initialpopulation(int nip, const std::vector<std::vector<double>*> cost){
     std::vector<chromosome*> p;
 
     for(int i=0; i< nip; i++)
     {
-        std::vector<int> v(cost->size());
+        std::vector<int> v(cost.size());
         std::iota(v.begin(), v.end(), 0);
         std::random_shuffle ( v.begin(), v.end());
         
@@ -21,7 +21,23 @@ std::vector<chromosome*> initialpopulation(int nip, const std::vector<std::vecto
     return p;
 }
 
-std::vector<chromosome*> get_discrete_distribution(std::vector<chromosome*> cs,int selectpop){
+void LS2opt(std::vector<chromosome*> cs,int ns, int param){
+    std::default_random_engine device(std::random_device{}());
+    std::uniform_int_distribution<> distr(0,cs.size()-1);
+
+    int number = 0;
+    int n = 0;
+    while(n < ns)
+    {
+        //std::cout<<"number"<<number<<std::endl;
+        number = distr(device);
+        //std::cout<<number<<" "<<cs.size()<<std::endl;
+        cs[number]->LS2opt(param);
+        n++;
+    }
+}
+
+std::vector<chromosome*> get_discrete_distribution(std::vector<chromosome*> cs,int ns){
     std::vector<double> v(cs.size());
     std::iota(v.begin(), v.end(), 1);
     for(int i=0;i<v.size();i++){
@@ -29,25 +45,15 @@ std::vector<chromosome*> get_discrete_distribution(std::vector<chromosome*> cs,i
     }
 
     std::discrete_distribution< > distr(v.begin(),v.end());
+    std::default_random_engine device(std::random_device{}());
 
-    std::random_device device;
-    std::mt19937 generator(device());
-
-
-
-    std::vector<int> selected(cs.size(),0);
     std::vector<chromosome*> nc;
-    int newpop = 0;
-    int number = 0;
-    while(newpop < selectpop)
+    int number,n = 0;
+    while(n < ns)
     {
-        number = distr(generator);
-        if( selected[number] != 1)
-        {
-            selected[number]=1;
-            nc.push_back(cs[number]);
-            newpop++;
-        }
+        number = distr(device);
+        nc.push_back(cs[number]);
+        n++;
     }
     return nc;
 }
@@ -101,17 +107,30 @@ void crossovercx2(chromosome* p1,chromosome* p2, std::vector<chromosome*>& cs){
     cs.push_back(c2);
 }
 
-void IRGIBNNM(chromosome* c1){
-    std::uniform_int_distribution<> d(1, c1->size());
-    std::mt19937 gen;
-
+void inversion(chromosome* c1){
+    
     //invertion mutation
-    int v1 =  d(gen);
-    int v2 = d(gen);
+    int v1 = (rand() % (c1->size()-1))+1;
+    int v2 = (rand() % (c1->size()-1))+1;
+    std::cout<<v1<<" "<<v2<<std::endl;
+    std::cout<<"........"<<std::endl;
     if (v1 > v2){
         int temp = v1;
         v1 = v2;
         v2 = temp;
     }
     c1->reverse(v1,v2);
+}
+
+void mutation(std::vector<chromosome*> cs,int ns){
+    std::default_random_engine device(std::random_device{}());
+    std::uniform_int_distribution<> d(0, cs.size()-1);
+
+    int number,n = 0;
+    while(n < ns)
+    {
+        number = d(device);
+        inversion(cs[number]);
+        n++;
+    }
 }

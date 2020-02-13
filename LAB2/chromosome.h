@@ -1,12 +1,13 @@
 #include <iostream>
 #include <vector>
+#include <random>
 
 class chromosome{
     private:
         std::vector<int> c;
-        const std::vector<std::vector<double>>* cost;
+        const std::vector<std::vector<double>*> cost;
     public:
-        chromosome(std::vector<int>,const std::vector<std::vector<double>>*);
+        chromosome(std::vector<int>,const std::vector<std::vector<double>*>);
         double fit()const;
         bool feasible()const;
         int size()const;
@@ -14,8 +15,8 @@ class chromosome{
         bool operator<(const chromosome&)const;
         void print()const;
         int find(int n)const;
-        const std::vector<std::vector<double>>* getcost();
-        void LS2opt();
+        const std::vector<std::vector<double>*> getcost();
+        void LS2opt(int ns);
         void reverse(int,int);
         int nearestcity(int);
 };

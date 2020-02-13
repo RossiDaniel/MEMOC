@@ -1,16 +1,18 @@
 #include "chromosome.h"
 #include <vector>
 #include <set>
+#include <iostream>
+using namespace std;
 
-chromosome::chromosome(std::vector<int> chro,const std::vector<std::vector<double>>* costvec): c(chro), cost(costvec){};
+chromosome::chromosome(std::vector<int> chro,const std::vector<std::vector<double>*> costvec): c(chro), cost(costvec){};
 
 double chromosome::fit()const
 {    
     if(find(-1) != -1){return 0;}
 
-    double fitness = (*cost)[c[c.size()-1]][c[0]];
+    double fitness = (*cost[c[c.size()-1]])[c[0]];
     for(int i=0; i< c.size()-1;i++){
-            fitness += (*cost)[c[i]][c[i+1]];
+            fitness += (*cost[c[i]])[c[i+1]];
         }
     
     return fitness;
@@ -53,38 +55,75 @@ int chromosome::find(int n)const{
     return -1;
 }
 
-const std::vector<std::vector<double>>* chromosome::getcost(){
+const std::vector<std::vector<double>*> chromosome::getcost(){
     return cost;
 }
 
-void chromosome::LS2opt(){
-    for(int i=1; i<c.size()-2;i++)
+void chromosome::LS2opt(int ns){
+    std::default_random_engine device;
+    std::vector<int> v(c.size()-2);
+
+    std::iota(v.begin(), v.end(), 1);
+
+    std::uniform_int_distribution<> distr(1,v.size());
+    std::vector<int> s;
+    int number = 0;
+    int n = 0;
+    while(n < ns)
     {
-        for(int j=i+1;j<c.size()-1;j++)
+        number = distr(device);
+        s.push_back(number);
+        n++;
+    }
+    std::sort(s.begin(),s.end());
+
+    double fitness = fit();
+    for(int i=0; i<s.size();i++)
+    {
+        for(int j=i+1; j<s.size();j++)
         {
-            double fitness = fit();
-            int Cnew = fitness - (*cost)[c[i-1]][c[i]] - (*cost)[c[j]][c[j+1]] + (*cost)[c[i-1]][c[j]] + (*cost)[c[i]][c[j+1]];
+            //individuano le posizione da reversare
+            int x = s[i];
+            int y = s[j];
+
+            if(x == y){continue;}
+
+            //salviamo il valore prima e quello dopo
+            int ix = c[x-1];
+            int yi = c[y+1];
+            
+            //salviamo i valori di x e y
+            int XX = c[x];
+            int YY = c[y];
+            
+            int Cnew = fitness - (*cost[ix])[XX] - (*cost[YY])[yi] + (*cost[ix])[YY] + (*cost[XX])[yi];
             //std::cout<<fitness<<" "<<Cnew<<std::endl;
             if(fitness > Cnew){
-                int temp = c[i];
-                c[i] = c[j];
-                c[j] = temp;
+                reverse(x,y);
+                fitness = fit();
             }
         }
     }
 }
 
 void chromosome::reverse(int a,int b){
-    std::reverse(c.begin()+a,c.begin()+b);
+    while(a < b){
+        int temp = c[a];
+        c[a] = c[b];
+        c[b] = temp;
+        a++;
+        b--;
+    }
 }
 
 int chromosome::nearestcity(int city){
     int nearestcity= 0;
-    for(int i=0; i<cost->size();i++){
+    for(int i=0; i<cost.size();i++){
         
-        if ((i != city) && (*cost)[nearestcity][city] > (*cost)[i][city]){
+        if ((i != city) && (*cost[nearestcity])[city] > (*cost[i])[city]){
             nearestcity = i;
         }
     }
     return nearestcity;
 }
+
