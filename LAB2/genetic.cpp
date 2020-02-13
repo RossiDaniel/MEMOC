@@ -5,6 +5,8 @@
 #include <random>
 #include <algorithm>
 #include "chromosome.cpp"
+#include "utility.cpp"
+
 
 std::vector<chromosome*> initialpopulation(int nip, const std::vector<std::vector<double>*> cost){
     std::vector<chromosome*> p;
@@ -105,28 +107,17 @@ void crossovercx2(chromosome* p1,chromosome* p2, std::vector<chromosome*>& cs){
     cs.push_back(c2);
 }
 
-void inversion(chromosome* c1){
-    
-    //invertion mutation
-    int v1 = (rand() % (c1->size()-1))+1;
-    int v2 = (rand() % (c1->size()-1))+1;
-    if (v1 > v2){
-        int temp = v1;
-        v1 = v2;
-        v2 = temp;
-    }
-    c1->reverse(v1,v2);
-}
-
 void mutation(std::vector<chromosome*> cs,int ns){
-    std::default_random_engine device(std::random_device{}());
-    std::uniform_int_distribution<> d(0, cs.size()-1);
-
-    int number,n = 0;
-    while(n < ns)
-    {
-        number = d(device);
-        inversion(cs[number]);
-        n++;
+    std::vector<int> v = uniform_distribution(0,cs.size(),ns);
+    for(int i= 0; i< v.size(); i++){
+        //invertion mutation
+        int v1 = (rand() % (cs[i]->size()-1))+1;
+        int v2 = (rand() % (cs[i]->size()-1))+1;
+        if (v1 > v2){
+            int temp = v1;
+            v1 = v2;
+            v2 = temp;
+        }
+        cs[i]->reverse(v1,v2);
     }
 }

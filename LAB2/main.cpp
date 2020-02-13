@@ -54,7 +54,6 @@ int main (int argc, char const *argv[]){
     while(n < it && current < TM){
         start = std::chrono::system_clock::now();
 
-
         LS2opt(p,LS,nswap);
         std::sort(p.begin(), p.end(),comparechromosome);
         //for(int i=0; i< p.size(); i++){p[i]->print();}
@@ -67,7 +66,6 @@ int main (int argc, char const *argv[]){
             n++;
         }
  
-        p[p.size()-1]->print();
         std::vector<chromosome*> selected = get_discrete_distribution(p,S);
         std::vector<chromosome*> children;
         for(int i=0; i<selected.size()-1;i++)
@@ -81,9 +79,6 @@ int main (int argc, char const *argv[]){
         end = std::chrono::system_clock::now();
         std::chrono::duration<double> elapsed_seconds = end-start;
         current = current + elapsed_seconds.count();
-;
-        std::cout<<"tempo residuo "<<current<<std::endl;
-
     }
     std::cout<<"best"<<std::endl;
     best->print();
