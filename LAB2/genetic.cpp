@@ -29,9 +29,7 @@ void LS2opt(std::vector<chromosome*> cs,int ns, int param){
     int n = 0;
     while(n < ns)
     {
-        //std::cout<<"number"<<number<<std::endl;
         number = distr(device);
-        //std::cout<<number<<" "<<cs.size()<<std::endl;
         cs[number]->LS2opt(param);
         n++;
     }
@@ -112,8 +110,6 @@ void inversion(chromosome* c1){
     //invertion mutation
     int v1 = (rand() % (c1->size()-1))+1;
     int v2 = (rand() % (c1->size()-1))+1;
-    std::cout<<v1<<" "<<v2<<std::endl;
-    std::cout<<"........"<<std::endl;
     if (v1 > v2){
         int temp = v1;
         v1 = v2;

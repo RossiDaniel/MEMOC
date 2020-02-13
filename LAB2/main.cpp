@@ -7,6 +7,9 @@
 #include "../data/parse.cpp"
 #include <stdlib.h>
 #include <time.h>
+#include <stdio.h>
+#include <chrono>
+#include <ctime>
 
 using namespace std;
 bool comparechromosome(chromosome* a, chromosome* b) { return (a->fit() > b->fit()); }
@@ -34,44 +37,53 @@ int main (int argc, char const *argv[]){
     int N = strtod(argv[2], NULL); // quantita' popolazione 
     int S = strtod(argv[3], NULL); // numero popolazione selezionata
     int LS = strtod(argv[4], NULL); // numero popolazione local search
-    int it = strtod(argv[5], NULL); // iterazione fallimentari
-    int M = strtod(argv[6], NULL); // numero popolazione mutazione
+    int nswap = strtod(argv[5], NULL); // numero città da swappare
+    int M = strtod(argv[5], NULL); // numero popolazione mutazione
+    int it = strtod(argv[7], NULL); // iterazione fallimentari
+    int TM = strtod(argv[8], NULL); // time limit secondi
 
     //generate random initial population
     vector<chromosome*> p = initialpopulation(N,C);
     chromosome * best = p[0];
     
     int n = 0;
+    double current = 0;
+    std::chrono::_V2::system_clock::time_point start,end;
+
     
-    while(n < it){
+    while(n < it && current < TM){
+        start = std::chrono::system_clock::now();
 
-        LS2opt(p,20,8);
 
-               // for(int i=0; i< p.size(); i++){p[i]->print();}
-
+        LS2opt(p,LS,nswap);
         std::sort(p.begin(), p.end(),comparechromosome);
-        for(int i=0; i< p.size(); i++){p[i]->print();}
-
-
+        //for(int i=0; i< p.size(); i++){p[i]->print();}
 
         if(best->fit() > p[p.size()-1]->fit()){
             best = p[p.size()-1];
+            best->print();
         }
         else{
             n++;
         }
  
         p[p.size()-1]->print();
-        //::vector<chromosome*> selected = get_discrete_distribution(p,S);
+        std::vector<chromosome*> selected = get_discrete_distribution(p,S);
         std::vector<chromosome*> children;
-        //for(int i=0; i<selected.size()-1;i++)
-        //{
+        for(int i=0; i<selected.size()-1;i++)
+        {
+            crossovercx2(selected[i],selected[i+1],children);
+        }
 
-           // crossovercx2(selected[i],selected[i+1],children);
-        //}
-        //selected.insert( selected.end(), children.begin(), children.end() );
-        //p = selected;
-        //mutation(p,M);*/
+        selected.insert( selected.end(), children.begin(), children.end() );
+        p = selected;
+        mutation(p,M);
+        end = std::chrono::system_clock::now();
+        std::chrono::duration<double> elapsed_seconds = end-start;
+        current = current + elapsed_seconds.count();
+;
+        std::cout<<"tempo residuo "<<current<<std::endl;
+
     }
     std::cout<<"best"<<std::endl;
     best->print();

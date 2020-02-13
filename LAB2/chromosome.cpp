@@ -60,21 +60,11 @@ const std::vector<std::vector<double>*> chromosome::getcost(){
 }
 
 void chromosome::LS2opt(int ns){
-    std::default_random_engine device;
-    std::vector<int> v(c.size()-2);
 
-    std::iota(v.begin(), v.end(), 1);
-
-    std::uniform_int_distribution<> distr(1,v.size());
-    std::vector<int> s;
-    int number = 0;
-    int n = 0;
-    while(n < ns)
-    {
-        number = distr(device);
-        s.push_back(number);
-        n++;
-    }
+    std::vector<int> s(c.size()-2);
+    std::iota(s.begin(), s.end(), 1);
+    std::random_shuffle ( s.begin(), s.end());
+    s.resize(ns);
     std::sort(s.begin(),s.end());
 
     double fitness = fit();
@@ -97,7 +87,6 @@ void chromosome::LS2opt(int ns){
             int YY = c[y];
             
             int Cnew = fitness - (*cost[ix])[XX] - (*cost[YY])[yi] + (*cost[ix])[YY] + (*cost[XX])[yi];
-            //std::cout<<fitness<<" "<<Cnew<<std::endl;
             if(fitness > Cnew){
                 reverse(x,y);
                 fitness = fit();
@@ -126,4 +115,3 @@ int chromosome::nearestcity(int city){
     }
     return nearestcity;
 }
-
