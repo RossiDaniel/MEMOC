@@ -7,6 +7,10 @@
 using namespace std;
 
 chromosome::chromosome(std::vector<int> chro,const std::vector<std::vector<double>*> costvec): c(chro), cost(costvec){};
+chromosome::chromosome(const chromosome* ch){
+    c = ch->c;
+    cost = ch->cost;
+}
 
 double chromosome::fit()const
 {    

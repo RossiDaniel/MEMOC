@@ -19,3 +19,4 @@ std::vector<int> uniform_shuffle(int s, int sz, int rz){
     v.resize(rz);
     return v;
 }
+

@@ -5,6 +5,7 @@
 #include <random>
 #include <algorithm>
 #include "chromosome.cpp"
+#include <thread>
 
 std::vector<chromosome*> initialpopulation(int nip, const std::vector<std::vector<double>*> cost){
     std::vector<chromosome*> p;
@@ -20,6 +21,38 @@ std::vector<chromosome*> initialpopulation(int nip, const std::vector<std::vecto
     return p;
 }
 
+void func(std::vector<chromosome*> cs, std::vector<int> v, int a , int b, int param ){
+    for(int i=a; i< b && i<v.size();i++){
+        cs[v[i]]->LS2opt(param);
+    }
+
+}
+/*
+void LS2opt(std::vector<chromosome*> cs,int ns, int param){
+    std::vector<int> v = uniform_shuffle(0,cs.size()-1,ns);
+    int core = 4;
+    int n = v.size()/core;
+    std::cout<<"iniziamo"<<std::endl;
+	// determine number of sub-vectors of size n
+	int size = (v.size() - 1) / n + 1;
+
+	// create array of vectors to store the sub-vectors
+    std::vector<std::thread> threads(size);
+
+	for (int k = 0; k < size; ++k)
+	{
+		// get range for next set of n elements
+        std::cout<<k*n<<" "<<k*n+n<<" "<<v.size()<<std::endl;
+        threads[k]= std::thread(func, cs, v, k*n,k*n+n,param);
+    }
+    
+    for(int k=0; k< size; k++){
+        threads[k].join();
+    }
+
+}
+*/
+
 void LS2opt(std::vector<chromosome*> cs,int ns, int param){
     std::vector<int> v = uniform_shuffle(0,cs.size()-1,ns);
 
@@ -27,7 +60,7 @@ void LS2opt(std::vector<chromosome*> cs,int ns, int param){
     {
         cs[v[i]]->LS2opt(param);
     }
-}
+} 
 
 std::vector<chromosome*> get_discrete_distribution(std::vector<chromosome*> cs,int ns){
     std::vector<double> v(cs.size());

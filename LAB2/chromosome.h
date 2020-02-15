@@ -5,9 +5,10 @@
 class chromosome{
     private:
         std::vector<int> c;
-        const std::vector<std::vector<double>*> cost;
+        std::vector<std::vector<double>*> cost;
     public:
         chromosome(std::vector<int>,const std::vector<std::vector<double>*>);
+        chromosome(const chromosome*);
         double fit()const;
         bool feasible()const;
         int size()const;
