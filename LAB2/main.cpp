@@ -61,9 +61,14 @@ int main (int argc, char const *argv[]){
         if(best->fit() > p[p.size()-1]->fit()){
             best = p[p.size()-1];
             best->print();
+
+            LS = LS - (double(LS)/100)*2;
+            nswap = nswap + (double(nswap)/100)*2;
         }
         else{
             n++;
+            LS = LS + (double(LS)/100)*2;
+            nswap = nswap - (double(nswap)/100)*2;
         }
  
         std::vector<chromosome*> selected = get_discrete_distribution(p,S);

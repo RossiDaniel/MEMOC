@@ -5,8 +5,6 @@
 #include <random>
 #include <algorithm>
 #include "chromosome.cpp"
-#include "utility.cpp"
-
 
 std::vector<chromosome*> initialpopulation(int nip, const std::vector<std::vector<double>*> cost){
     std::vector<chromosome*> p;
@@ -16,7 +14,6 @@ std::vector<chromosome*> initialpopulation(int nip, const std::vector<std::vecto
         std::vector<int> v(cost.size());
         std::iota(v.begin(), v.end(), 0);
         std::random_shuffle ( v.begin(), v.end());
-        
         chromosome* c = new chromosome(v,cost);
         p.push_back(c);
     }
@@ -24,16 +21,11 @@ std::vector<chromosome*> initialpopulation(int nip, const std::vector<std::vecto
 }
 
 void LS2opt(std::vector<chromosome*> cs,int ns, int param){
-    std::default_random_engine device(std::random_device{}());
-    std::uniform_int_distribution<> distr(0,cs.size()-1);
+    std::vector<int> v = uniform_shuffle(0,cs.size()-1,ns);
 
-    int number = 0;
-    int n = 0;
-    while(n < ns)
+    for(int i= 0; i< v.size(); i++)
     {
-        number = distr(device);
-        cs[number]->LS2opt(param);
-        n++;
+        cs[v[i]]->LS2opt(param);
     }
 }
 
@@ -108,7 +100,7 @@ void crossovercx2(chromosome* p1,chromosome* p2, std::vector<chromosome*>& cs){
 }
 
 void mutation(std::vector<chromosome*> cs,int ns){
-    std::vector<int> v = uniform_distribution(0,cs.size(),ns);
+    std::vector<int> v = uniform_shuffle(0,cs.size(),ns);
     for(int i= 0; i< v.size(); i++){
         //invertion mutation
         int v1 = (rand() % (cs[i]->size()-1))+1;
@@ -118,6 +110,6 @@ void mutation(std::vector<chromosome*> cs,int ns){
             v1 = v2;
             v2 = temp;
         }
-        cs[i]->reverse(v1,v2);
+        cs[v[i]]->reverse(v1,v2);
     }
 }

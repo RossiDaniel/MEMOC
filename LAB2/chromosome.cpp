@@ -2,6 +2,8 @@
 #include <vector>
 #include <set>
 #include <iostream>
+#include "utility.cpp"
+
 using namespace std;
 
 chromosome::chromosome(std::vector<int> chro,const std::vector<std::vector<double>*> costvec): c(chro), cost(costvec){};
@@ -12,8 +14,8 @@ double chromosome::fit()const
 
     double fitness = (*cost[c[c.size()-1]])[c[0]];
     for(int i=0; i< c.size()-1;i++){
-            fitness += (*cost[c[i]])[c[i+1]];
-        }
+        fitness += (*cost[c[i]])[c[i+1]];
+    }
     
     return fitness;
 }
@@ -44,7 +46,7 @@ void chromosome::print()const{
         std::cout<<c[j]<<" ";
     }
 
-    std::cout<<". "<<feasible()<<std::endl;
+    std::cout<<". "<<feasible()<<std::endl<<std::endl;
 }
 
 int chromosome::find(int n)const{
@@ -60,11 +62,13 @@ const std::vector<std::vector<double>*> chromosome::getcost(){
 }
 
 void chromosome::LS2opt(int ns){
-
+    std::vector<int> s = uniform_shuffle(1,c.size()-2,ns);
+/*
     std::vector<int> s(c.size()-2);
     std::iota(s.begin(), s.end(), 1);
     std::random_shuffle ( s.begin(), s.end());
     s.resize(ns);
+*/
     std::sort(s.begin(),s.end());
 
     double fitness = fit();
