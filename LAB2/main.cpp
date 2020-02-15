@@ -53,39 +53,27 @@ int main (int argc, char const *argv[]){
     
     while(n < it && current < TM){
         start = std::chrono::system_clock::now();
-        std::cout<<"1"<<std::endl;
         
         LS2opt(p,LS,nswap);
-                std::cout<<"2"<<std::endl;
 
         std::sort(p.begin(), p.end(),comparechromosome);       
-         std::cout<<"3"<<std::endl;
 
-        //for(int i=0; i< p.size(); i++){p[i]->print();}
-        std::cout<<best->fit() <<" "<< p[p.size()-1]->fit()<<std::endl;
         if(best->fit() > p[p.size()-1]->fit()){
             best = new chromosome(p[p.size()-1]);
-            //best->print();
+            best->print();
             n=0;
         }
         else{
             n++;
         }
-         std::cout<<"4"<<std::endl;
 
         std::vector<chromosome*> selected = get_discrete_distribution(p,S);
-                std::cout<<"5"<<std::endl;
 
         std::vector<chromosome*> children;
         for(int i=0; i<selected.size();i=i+2)
         {
-            //std::cout<<selected[i]->print()<<" "<<selected[i+1]->print()<<std::endl;
-            std::cout<<"-------"<<std::endl;
-            selected[i]->print();
-            selected[i+1]->print();
             crossovercx2(selected[i],selected[i+1],children);
         }
-        std::cout<<"6"<<std::endl;
 
         selected.insert( selected.end(), children.begin(), children.end() );
         p = selected;
@@ -94,6 +82,8 @@ int main (int argc, char const *argv[]){
         std::chrono::duration<double> elapsed_seconds = end-start;
         current = current + elapsed_seconds.count();
     }
-    std::cout<<"best"<<std::endl;
+    
+    std::cout<<"tempo residuo: "<< TM - current<<std::endl;
+    std::cout<<"best -> obj";
     best->print();
 }
