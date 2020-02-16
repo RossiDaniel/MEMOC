@@ -36,11 +36,11 @@ std::vector<chromosome*> get_discrete_distribution(std::vector<chromosome*> cs,i
     for(int i=0;i<v.size();i++){
         v[i] = (v[i]*2)/(v.size()*(v.size()+1));
     }
-
     std::discrete_distribution< > distr(v.begin(),v.end());
     std::default_random_engine device(std::random_device{}());
 
     std::vector<chromosome*> nc;
+
     int number,n = 0;
     while(n < ns)
     {

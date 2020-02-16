@@ -23,6 +23,16 @@ inline bool exist(const std::string& name)
         return true;     // The file was found.
 }
 
+double avg2(std::vector<double> const& v) {
+    int n = 0;
+    double mean = 0.0;
+    for (auto x : v) {
+        double delta = x - mean;
+        mean += delta/++n;
+    }
+    return mean;
+}
+
 int main (int argc, char const *argv[]){
 	
 	if((argc == 0) || (argc > 0 && !exist(argv[1]))){
@@ -42,48 +52,54 @@ int main (int argc, char const *argv[]){
     int it = strtod(argv[7], NULL); // iterazione fallimentari
     int TM = strtod(argv[8], NULL); // time limit secondi
 
-    //generate random initial population
-    vector<chromosome*> p = initialpopulation(N,C);
-    chromosome * best = p[0];
-    
-    int n = 0;
-    double current = 0;
-    std::chrono::_V2::system_clock::time_point start,end;
-
-    
-    while(n < it && current < TM){
-        start = std::chrono::system_clock::now();
+    vector<double> fit;
+    vector<double> tme;
+    for(int i=0;i<50;i++){
+        //generate random initial population
+        vector<chromosome*> p = initialpopulation(N,C);
+        chromosome * best = p[0];
         
-        LS2opt(p,LS,nswap);
+        int n = 0;
+        double current = 0;
+        std::chrono::_V2::system_clock::time_point start,end;
 
-        std::sort(p.begin(), p.end(),comparechromosome);       
+        while(n < it && current < TM){
+            start = std::chrono::system_clock::now();
+            
+            LS2opt(p,LS,nswap);
 
-        if(best->fit() > p[p.size()-1]->fit()){
-            best = new chromosome(p[p.size()-1]);
-            best->print();
-            n=0;
+            std::sort(p.begin(), p.end(),comparechromosome);       
+
+            if(best->fit() > p[p.size()-1]->fit()){
+                best = new chromosome(p[p.size()-1]);
+                //best->print();
+                n=0;
+            }
+            else{
+                n++;
+            }
+
+            std::vector<chromosome*> selected = get_discrete_distribution(p,S);
+
+            std::vector<chromosome*> children;
+            for(int i=0; i<selected.size()-1;i=i+2)
+            {
+                crossovercx2(selected[i],selected[i+1],children);
+            }
+
+            selected.insert( selected.end(), children.begin(), children.end() );
+            p = selected;
+            mutation(p,M);
+            end = std::chrono::system_clock::now();
+            std::chrono::duration<double> elapsed_seconds = end-start;
+            current = current + elapsed_seconds.count();
         }
-        else{
-            n++;
-        }
+        //std::cout<<"tempo esecuzione: "<< current<<std::endl;
+        //std::cout<<"best -> obj ";
+        //best->print();
+        fit.push_back(best->fit());
+        tme.push_back(current);
+        std::cout<<i<<"-> obj: "<<avg2(fit)<<" time: "<<avg2(tme)<<std::endl;
 
-        std::vector<chromosome*> selected = get_discrete_distribution(p,S);
-
-        std::vector<chromosome*> children;
-        for(int i=0; i<selected.size();i=i+2)
-        {
-            crossovercx2(selected[i],selected[i+1],children);
-        }
-
-        selected.insert( selected.end(), children.begin(), children.end() );
-        p = selected;
-        mutation(p,M);
-        end = std::chrono::system_clock::now();
-        std::chrono::duration<double> elapsed_seconds = end-start;
-        current = current + elapsed_seconds.count();
     }
-    
-    std::cout<<"tempo residuo: "<< TM - current<<std::endl;
-    std::cout<<"best -> obj";
-    best->print();
 }

@@ -4,7 +4,8 @@
 #include <iostream>
 #include "../data/parse.cpp"
 #include "cpxmacro.h"
-
+#include <chrono>
+#include <ctime>
 using namespace std;	
 
 // error status and messagge buffer
@@ -22,7 +23,7 @@ const int O = 0;
 const double cost0 = 0.0;
 const double cost1 = 1.0;
 
-void setupLP(CEnv env, Prob lp, vector<vector<double>>& C, int & NumVar){
+void setupLP(CEnv env, Prob lp, vector<vector<double>*>& C, int & NumVar){
     //	MAP FOR X VARS: allocate map
 	map_x.resize(N);
 	for ( int i = 0 ; i < N ; ++i ) {
@@ -81,7 +82,7 @@ void setupLP(CEnv env, Prob lp, vector<vector<double>>& C, int & NumVar){
 			if(i != j)
 			{
 				char ytype = 'B';
-				double obj = C[i][j];
+				double obj = (*C[i])[j];
 				double lb = 0.0;
 				double ub = 1.0;
 				snprintf(name, NAME_SIZE, "y_%d_%d", i, j);
@@ -196,7 +197,9 @@ int main (int argc, char const *argv[]){
 		return 0;
 	}
 
-	vector<vector<double>> C = parse(argv[1]);
+	vector<vector<double>*> C = parse(argv[1]);
+    std::chrono::_V2::system_clock::time_point start,end;
+
 	try
 	{
 		// init
@@ -209,7 +212,11 @@ int main (int argc, char const *argv[]){
 		//timelimit
 		CPXsetdblparam(env, CPX_PARAM_TILIM, strtod(argv[2], NULL));
 		// optimize
+		start = std::chrono::system_clock::now();
 		CHECKED_CPX_CALL( CPXmipopt, env, lp );
+		end = std::chrono::system_clock::now();
+		std::chrono::duration<double> elapsed_seconds = end-start;
+		std::cout<<"ELapsed time: "<<elapsed_seconds.count()<<std::endl;
 		// print info
 		double objval;
 		CHECKED_CPX_CALL( CPXgetobjval, env, lp, &objval );
