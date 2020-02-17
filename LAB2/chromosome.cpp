@@ -66,42 +66,41 @@ const std::vector<std::vector<double>*> chromosome::getcost(){
 }
 
 void chromosome::LS2opt(int ns){
-    std::vector<int> s = uniform_shuffle(1,c.size()-2,ns);
-/*
-    std::vector<int> s(c.size()-2);
-    std::iota(s.begin(), s.end(), 1);
-    std::random_shuffle ( s.begin(), s.end());
-    s.resize(ns);
-*/
-    std::sort(s.begin(),s.end());
+    bool no_improvment = true;
+    while (no_improvment){
+        no_improvment = false;
 
-    double fitness = fit();
-    for(int i=0; i<s.size();i++)
-    {
-        for(int j=i+1; j<s.size();j++)
+        std::vector<int> s = uniform_shuffle(1,c.size()-2,ns);
+        double fitness = fit();
+        for(int i=0; i<s.size() && !no_improvment;i++)
         {
-            //individuano le posizione da reversare
-            int x = s[i];
-            int y = s[j];
+            for(int j=i+1; j<s.size() && !no_improvment;j++)
+            {
+                //individuano le posizione da reversare
+                int x = std::min(s[i],s[j]);
+                int y = std::max(s[i],s[j]);
 
-            if(x == y){continue;}
+                if(x == y){continue;}
 
-            //salviamo il valore prima e quello dopo
-            int ix = c[x-1];
-            int yi = c[y+1];
-            
-            //salviamo i valori di x e y
-            int XX = c[x];
-            int YY = c[y];
-            
-            int Cnew = fitness - (*cost[ix])[XX] - (*cost[YY])[yi] + (*cost[ix])[YY] + (*cost[XX])[yi];
-            if(fitness > Cnew){
-                reverse(x,y);
-                fitness = fit();
+                //salviamo il valore prima e quello dopo
+                int ix = c[x-1];
+                int yi = c[y+1];
+                
+                //salviamo i valori di x e y
+                int XX = c[x];
+                int YY = c[y];
+                
+                int Cnew = fitness - (*cost[ix])[XX] - (*cost[YY])[yi] + (*cost[ix])[YY] + (*cost[XX])[yi];
+                if(fitness > Cnew){
+                    reverse(x,y);
+                    fitness = fit();
+                    no_improvment = true;
+                }
             }
         }
     }
 }
+
 
 void chromosome::reverse(int a,int b){
     while(a < b){
