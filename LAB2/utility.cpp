@@ -16,7 +16,7 @@ std::vector<int> uniform_shuffle(int s, int sz, int rz){
     std::vector<int> v(sz,0);
     std::iota(v.begin(), v.end(), s);
     std::random_shuffle (v.begin(), v.end());
-    v.resize(rz);
+    v.resize(std::min(rz,sz));
     return v;
 }
 

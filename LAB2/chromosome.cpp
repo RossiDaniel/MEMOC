@@ -72,6 +72,7 @@ void chromosome::LS2opt(int ns){
 
         std::vector<int> s = uniform_shuffle(1,c.size()-2,ns);
         double fitness = fit();
+        
         for(int i=0; i<s.size() && !no_improvment;i++)
         {
             for(int j=i+1; j<s.size() && !no_improvment;j++)
@@ -79,8 +80,6 @@ void chromosome::LS2opt(int ns){
                 //individuano le posizione da reversare
                 int x = std::min(s[i],s[j]);
                 int y = std::max(s[i],s[j]);
-
-                if(x == y){continue;}
 
                 //salviamo il valore prima e quello dopo
                 int ix = c[x-1];

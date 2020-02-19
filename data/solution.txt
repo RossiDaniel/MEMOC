@@ -6,4 +6,4 @@ data29.csv -> 2020
 data42.csv -> 699
 data48.csv -> 33551
 data76.csv -> 108137
-data575.csv -> 10868
+data575.csv -> 7320
