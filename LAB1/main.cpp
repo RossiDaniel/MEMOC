@@ -191,13 +191,9 @@ inline bool exist(const std::string& name)
 }
 
 int main (int argc, char const *argv[]){
-	
-	if((argc == 0) || (argc > 0 && !exist(argv[1]))){
-		cout<<"dat file not found"<<endl;
-		return 0;
-	}
-
-	vector<vector<double>*> C = parse(argv[1]);
+	std::string n = argv[1];
+    std::string file_path= "../data/data"+n+".csv";
+	vector<vector<double>*> C = parse(file_path);
     std::chrono::_V2::system_clock::time_point start,end;
 
 	try
@@ -216,18 +212,17 @@ int main (int argc, char const *argv[]){
 		CHECKED_CPX_CALL( CPXmipopt, env, lp );
 		end = std::chrono::system_clock::now();
 		std::chrono::duration<double> elapsed_seconds = end-start;
-		std::cout<<"ELapsed time: "<<elapsed_seconds.count()<<std::endl;
+		//std::cout<<"ELapsed time: "<<elapsed_seconds.count()<<std::endl;
 		// print info
 		double objval;
 		CHECKED_CPX_CALL( CPXgetobjval, env, lp, &objval );
-		std::cout << "Objval: " << objval << std::endl;
+
+		std::cout<<"obj: "<<objval<<" "<<" elapsed_time: "<<elapsed_seconds.count()<<" Numvar: "<<NumVars<<std::endl;
 		int n = CPXgetnumcols(env, lp);
-		cout << "check num var: " << n << " == " << NumVars << endl;
-		if (n != NumVars) { throw std::runtime_error(std::string(__FILE__) + ":" + STRINGIZE(__LINE__) + ": " + "different number of variables"); }
 		std::vector<double> varVals;
 		varVals.resize(n);
 		CHECKED_CPX_CALL( CPXgetx, env, lp, &varVals[0], 0, n - 1 );
-
+		
 		//print path
 		std::deque<int> deq;
 		deq.push_back(0);
@@ -246,8 +241,7 @@ int main (int argc, char const *argv[]){
 				}
 			}
 		}
-		cout<<0;
-
+		
 		CHECKED_CPX_CALL( CPXsolwrite, env, lp, "LAB1.sol" );
 		// free
 		CPXfreeprob(env, &lp);

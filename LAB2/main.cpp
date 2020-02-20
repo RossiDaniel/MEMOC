@@ -35,7 +35,6 @@ void genetic(std::string n, int p,int s, int l, int k, int m, int f, int t){
 
         if(best->fit() > P[P.size()-1]->fit()){
             best = new chromosome(P[P.size()-1]);
-            best->print();
             x=0;
         }
         else{
@@ -55,7 +54,8 @@ void genetic(std::string n, int p,int s, int l, int k, int m, int f, int t){
     for(int i=0;i<P.size();i++){
         delete P[i];
     }
-    std::cout<<best->fit()<<" "<<ct<<std::endl;
+    std::cout<<"tempo: "<<ct<<std::endl;
+    best->print();
 }
 
 int main (int argc, char const *argv[]){
