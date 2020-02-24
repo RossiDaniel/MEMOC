@@ -237,7 +237,7 @@ int main (int argc, char const *argv[]){
     		deq.pop_front();
 			for (unsigned int j = 0; j < map_y[c].size(); j++)
 			{
-				if(c != j && varVals[map_y[c][j]] == 1)
+				if(c != j && varVals[map_y[c][j]] >= 0.9)
 				{
 					std::cout << c <<" ";
 					if(j != 0){deq.push_back(j);}
