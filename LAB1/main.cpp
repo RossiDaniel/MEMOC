@@ -207,17 +207,21 @@ int main (int argc, char const *argv[]){
 		setupLP(env, lp, C,NumVars);
 		//timelimit
 		CPXsetdblparam(env, CPX_PARAM_TILIM, strtod(argv[2], NULL));
+		//time_elapsed
+		double start,end;
+  		CHECKED_CPX_CALL( CPXgettime, env, &start );
+		//CPXgettime(env, &elapsed_time);
+
 		// optimize
-		start = std::chrono::system_clock::now();
 		CHECKED_CPX_CALL( CPXmipopt, env, lp );
-		end = std::chrono::system_clock::now();
-		std::chrono::duration<double> elapsed_seconds = end-start;
-		//std::cout<<"ELapsed time: "<<elapsed_seconds.count()<<std::endl;
+		
+		CHECKED_CPX_CALL( CPXgettime, env, &end );
+
 		// print info
 		double objval;
 		CHECKED_CPX_CALL( CPXgetobjval, env, lp, &objval );
 
-		std::cout<<"obj: "<<objval<<" "<<" elapsed_time: "<<elapsed_seconds.count()<<" Numvar: "<<NumVars<<std::endl;
+		std::cout<<"obj: "<<objval<<" "<<" elapsed_time: "<<end-start<<" Numvar: "<<NumVars<<std::endl;
 		int n = CPXgetnumcols(env, lp);
 		std::vector<double> varVals;
 		varVals.resize(n);
