@@ -209,12 +209,14 @@ int main (int argc, char const *argv[]){
 		CPXsetdblparam(env, CPX_PARAM_TILIM, strtod(argv[2], NULL));
 		//time_elapsed
 		double start,end;
+
+		//timestamp inizio
   		CHECKED_CPX_CALL( CPXgettime, env, &start );
-		//CPXgettime(env, &elapsed_time);
 
 		// optimize
 		CHECKED_CPX_CALL( CPXmipopt, env, lp );
 		
+		//timestamp fine
 		CHECKED_CPX_CALL( CPXgettime, env, &end );
 
 		// print info
