@@ -30,7 +30,7 @@ void LS2opt(std::vector<chromosome*> cs,int ns, int param){
     }
 } 
 
-std::vector<chromosome*> get_discrete_distribution(std::vector<chromosome*> cs,int ns){
+std::vector<chromosome*> select_population(std::vector<chromosome*> cs,int ns){
     std::vector<double> v(cs.size());
     std::iota(v.begin(), v.end(), 1);
     for(int i=0;i<v.size();i++){
@@ -49,7 +49,7 @@ std::vector<chromosome*> get_discrete_distribution(std::vector<chromosome*> cs,i
         v[number] =0;
         n++;
     }
-    
+    //dealloco popolazione non selezionata
     for (int i =0; i< cs.size();i++){
         if (v[i] != 0){
             delete cs[i];

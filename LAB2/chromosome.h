@@ -19,5 +19,4 @@ class chromosome{
         const std::vector<std::vector<double>*> getcost();
         void LS2opt(int ns);
         void reverse(int,int);
-        int nearestcity(int);
 };

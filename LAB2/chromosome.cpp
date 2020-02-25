@@ -110,14 +110,3 @@ void chromosome::reverse(int a,int b){
         b--;
     }
 }
-
-int chromosome::nearestcity(int city){
-    int nearestcity= 0;
-    for(int i=0; i<cost.size();i++){
-        
-        if ((i != city) && (*cost[nearestcity])[city] > (*cost[i])[city]){
-            nearestcity = i;
-        }
-    }
-    return nearestcity;
-}
