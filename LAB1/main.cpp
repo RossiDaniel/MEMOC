@@ -125,7 +125,7 @@ void setupLP(CEnv env, Prob lp, vector<vector<double>*>& C, int & NumVar){
 		CHECKED_CPX_CALL( CPXaddrows, env, lp, 0, 1, idx.size(), &cost1, &sense, &matbeg, &idx[0], &coef[0], 0, 0 );
 	}
 
-	// add capacity constraints (origin) [ forall i, sum{j:(i,j) } x_ij = 1 ]
+	// add capacity constraints (origin) [ forall i, sum{j:(i,j) } y_ij = 1 ]
 	for (int i = 0; i < N; i++)
 	{
 		std::vector<int> idy;
@@ -143,7 +143,7 @@ void setupLP(CEnv env, Prob lp, vector<vector<double>*>& C, int & NumVar){
 		CHECKED_CPX_CALL( CPXaddrows, env, lp, 0, 1, idy.size(), &cost1, &sense, &matbeg, &idy[0], &coef[0], 0, 0 );
 	}
 
-	// add capacity constraints (origin) [ forall j, sum{i:(i,j) } x_ij = 1 ]
+	// add capacity constraints (origin) [ forall j, sum{i:(i,j) } y_ij = 1 ]
 	for (int j = 0; j < N; j++)
 	{
 		std::vector<int> idy;
